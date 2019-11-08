@@ -31,9 +31,6 @@ class image_converter:
     except CvBridgeError as e:
       print(e)
     
-    # Uncomment if you want to save the image
-    #cv2.imwrite('image_copy.png', cv_image)
-
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
     
