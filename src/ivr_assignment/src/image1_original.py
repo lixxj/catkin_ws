@@ -34,19 +34,6 @@ class image_converter:
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
           
-    ########## TODO ##########
-    ## Vision
-    # Joint state estimation
-    
-    # Target detection
-    
-    ## Control
-    # Forward Kinematics
-    
-    # Closed-loop Control   
-    
-    ########## END OF TODO ##########
-
     # Publish the results
     try: 
       self.image_pub1.publish(self.bridge.cv2_to_imgmsg(self.cv_image1, "bgr8"))
