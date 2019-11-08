@@ -11,7 +11,6 @@ from std_msgs.msg import Float64MultiArray, Float64
 from cv_bridge import CvBridge, CvBridgeError
 from scipy.optimize import fsolve
 
-
 class image_converter:
 
   # Defines publisher and subscriber
