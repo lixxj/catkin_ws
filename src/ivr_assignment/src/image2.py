@@ -33,6 +33,19 @@ class image_converter:
     
     im2=cv2.imshow('window2', self.cv_image2)
     cv2.waitKey(1)
+    
+    ########## TODO ##########
+    ## Vision
+    # Joint state estimation
+    
+    # Target detection
+    
+    ## Control
+    # Forward Kinematics
+    
+    # Closed-loop Control   
+    
+    ########## END OF TODO ##########
 
     # Publish the results
     try: 
