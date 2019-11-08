@@ -10,7 +10,6 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Float64MultiArray, Float64
 from cv_bridge import CvBridge, CvBridgeError
 
-
 class image_converter:
 
   # Defines publisher and subscriber
@@ -36,10 +35,11 @@ class image_converter:
       M = cv2.moments(mask)
       # Calculate pixel coordinates for the centre of the blob
       if M['m00'] == 0:
-	return np.array([np.nan,np.nan])
+	      return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
+  
   # Detecting the centre of the green circle
   def detect_green(self,image):
       mask = cv2.inRange(image, (0, 100, 0), (0, 255, 0))
