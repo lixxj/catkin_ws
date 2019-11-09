@@ -33,10 +33,9 @@ class image_converter:
     self.robot_joint4_pub = rospy.Publisher("/robot/joint4_position_controller/command", Float64, queue_size=10)
     # initialize the bridge between openCV and ROS
     
-
   #___________________detection of the blobs__________________________
   def detect_red(self,image):
-      # Isolate the blue colour in the image as a binary image
+      # Isolate the colour in the image as a binary image
       mask = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
       # This applies a dilate that makes the binary region larger (the more iterations the larger it becomes)
       kernel = np.ones((5, 5), np.uint8)
