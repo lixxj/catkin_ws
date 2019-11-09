@@ -26,7 +26,7 @@ class image_converter:
     self.bridge = CvBridge()
     
   def detect_red(self,image):
-      # Isolate the blue colour in the image as a binary image
+      # Isolate the colour in the image as a binary image
       mask = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
       # This applies a dilate that makes the binary region larger (the more iterations the larger it becomes)
       kernel = np.ones((5, 5), np.uint8)
@@ -73,7 +73,6 @@ class image_converter:
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
-
 
   # Recieve data from camera 1, process it, and publish
   def callback1(self,data):
