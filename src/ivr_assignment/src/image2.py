@@ -21,9 +21,9 @@ class image_converter:
     self.bridge = CvBridge()
     #scale (projection in plane parallel to camera through yellow blob) determined for all angles=0
     self.image_pub2 = rospy.Publisher("image_topic2",Image, queue_size = 1)
-    # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
-    self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw",Image,self.callback2)
-    self.image1_sub = rospy.Subscriber("/camera1/blob_pos",Float64MultiArray,self.callbackmaster)
+    # initialize a subscriber to recieve messages rom a topic named /robot/camera2/image_raw and use callback function to recieve data
+    self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw",Image, self.callback2)
+    self.image1_sub = rospy.Subscriber("/camera1/blob_pos", Float64MultiArray, self.combine)
     # initialize a publisher to publish position of blobs
     self.blob_pub2 = rospy.Publisher("/camera2/blob_pos",Float64MultiArray, queue_size=10)
     # initialize a publisher to send joints' angular position to the robot
@@ -92,9 +92,9 @@ class image_converter:
       print(e)
     
     self.blob_pos2 = Float64MultiArray()
-    self.blob_pos2.data = np.array([self.detect_yellow(self.cv_image2),self.detect_blue(self.cv_image2),self.detect_green(self.cv_image2),self.detect_red(self.cv_image2)]).flatten()
+    self.blob_pos2.data = np.array([self.detect_yellow(self.cv_image2), self.detect_blue(self.cv_image2), self.detect_green(self.cv_image2), self.detect_red(self.cv_image2)]).flatten()
     
-    im2=cv2.imshow('window2', self.cv_image2)
+    im2 = cv2.imshow('window2', self.cv_image2)
     cv2.waitKey(10000)
 
     # Publish the results
@@ -103,6 +103,10 @@ class image_converter:
       self.blob_pub2.publish(self.blob_pos2)
     except CvBridgeError as e:
       print(e)
+
+  def combine(self, data):
+    image1_data = np.array(data.data) 
+
 
 # call the class
 def main(args):

@@ -11,7 +11,6 @@ from std_msgs.msg import Float64MultiArray, Float64
 from cv_bridge import CvBridge, CvBridgeError
 from scipy.optimize import fsolve
 
-
 class image_converter:
 
   # Defines publisher and subscriber
@@ -34,58 +33,55 @@ class image_converter:
     self.robot_joint4_pub = rospy.Publisher("/robot/joint4_position_controller/command", Float64, queue_size=10)
     # initialize the bridge between openCV and ROS
     
-
-  #___________________detection of the blobs__________________________
+  ############### COLOUR DECTECTION FUNCTIONS ###############
   def detect_red(self,image):
-      # Isolate the blue colour in the image as a binary image
+      # Isolate the colour region
       mask = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
-      # This applies a dilate that makes the binary region larger (the more iterations the larger it becomes)
+      # Dilate the region 
       kernel = np.ones((5, 5), np.uint8)
       mask = cv2.dilate(mask, kernel, iterations=3)
-      # Obtain the moments of the binary image
+      # Obtain the moments of the region
       M = cv2.moments(mask)
-      # Calculate pixel coordinates for the centre of the blob
-      if M['m00'] == 0:
-	return np.array([np.nan,np.nan])
+      # Calculate pixel coordinates
+      if M['m00'] == 0: # colour not found
+	      return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
-
-  # Detecting the centre of the green circle
+  
   def detect_green(self,image):
       mask = cv2.inRange(image, (0, 100, 0), (0, 255, 0))
       kernel = np.ones((5, 5), np.uint8)
       mask = cv2.dilate(mask, kernel, iterations=3)
       M = cv2.moments(mask)
       if M['m00'] == 0:
-	return np.array([np.nan,np.nan])
+	      return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
-
-  # Detecting the centre of the blue circle
+  
   def detect_blue(self,image):
       mask = cv2.inRange(image, (100, 0, 0), (255, 0, 0))
       kernel = np.ones((5, 5), np.uint8)
       mask = cv2.dilate(mask, kernel, iterations=3)
       M = cv2.moments(mask)
       if M['m00'] == 0:
-	return np.array([np.nan,np.nan])
+	      return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
-
-  # Detecting the centre of the yellow circle
+  
   def detect_yellow(self,image):
       mask = cv2.inRange(image, (0, 100, 100), (0, 255, 255))
       kernel = np.ones((5, 5), np.uint8)
       mask = cv2.dilate(mask, kernel, iterations=3)
       M = cv2.moments(mask)
       if M['m00'] == 0:
-	return np.array([np.nan,np.nan])
+	      return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
+############### END OF COLOUR DECTECTION FUNCTIONS ###############
 
   #______________get the projection from published blob data______________
   def eliminate_nonvisible_blobs(self,blobs):    
@@ -101,7 +97,7 @@ class image_converter:
     corrected_blobs = self.eliminate_nonvisible_blobs(blobs)
     pos_cam = np.array(corrected_blobs).reshape((4,2))
     pos_cam = scale*pos_cam
-    pos_cam[0,1] = pos_cam[0,1]+r_yellow #takes into account that only half yellow blob is visible
+    pos_cam[0,1] = pos_cam[0,1]+r_yellow # only half yellow blob is visible
     pos_cam = pos_cam-pos_cam[0]
     pos_cam[:,1]=-pos_cam[:,1]
     return np.array(pos_cam)

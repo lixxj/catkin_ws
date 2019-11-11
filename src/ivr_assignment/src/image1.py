@@ -84,10 +84,9 @@ class image_converter:
       print(e)
     
     self.blob_pos1 = Float64MultiArray()
-    self.blob_pos1.data = np.array([self.detect_yellow(self.cv_image1),self.detect_blue(self.cv_image1),
-				  self.detect_green(self.cv_image1),self.detect_red(self.cv_image1)]).flatten()        
+    self.blob_pos1.data = np.array([self.detect_yellow(self.cv_image1), self.detect_blue(self.cv_image1), self.detect_green(self.cv_image1), self.detect_red(self.cv_image1)]).flatten()        
 
-    im1=cv2.imshow('window1', self.cv_image1)
+    im1 = cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(10000)
     
     # Publish the results
