@@ -25,7 +25,7 @@ class image_converter:
     # initialize the bridge between openCV and ROS
     self.bridge = CvBridge()
 
-############### END OF COLOUR DECTECTION FUNCTIONS ###############
+############### COLOUR DECTECTION FUNCTIONS ###############
   def detect_red(self,image):
       # Isolate the colour region
       mask = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
