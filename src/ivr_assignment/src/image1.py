@@ -10,6 +10,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Float64MultiArray, Float64
 from cv_bridge import CvBridge, CvBridgeError
 
+
 class image_converter:
 
   # Defines publisher and subscriber
@@ -26,7 +27,7 @@ class image_converter:
     self.bridge = CvBridge()
     
   def detect_red(self,image):
-      # Isolate the colour in the image as a binary image
+      # Isolate the blue colour in the image as a binary image
       mask = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
       # This applies a dilate that makes the binary region larger (the more iterations the larger it becomes)
       kernel = np.ones((5, 5), np.uint8)
@@ -35,11 +36,10 @@ class image_converter:
       M = cv2.moments(mask)
       # Calculate pixel coordinates for the centre of the blob
       if M['m00'] == 0:
-	      return np.array([np.nan,np.nan])
+	return np.array([np.nan,np.nan])
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
-  
   # Detecting the centre of the green circle
   def detect_green(self,image):
       mask = cv2.inRange(image, (0, 100, 0), (0, 255, 0))
@@ -73,6 +73,7 @@ class image_converter:
       cx = int(M['m10'] / M['m00'])
       cy = int(M['m01'] / M['m00'])
       return np.array([cx, cy])
+
 
   # Recieve data from camera 1, process it, and publish
   def callback1(self,data):
