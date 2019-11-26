@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-
 import rospy
 import numpy as np
 from std_msgs.msg import String
 from std_msgs.msg import Float64
-
 
 # Publish data
 def move():
@@ -47,13 +45,9 @@ def move():
     robot_joint6_pub.publish(joint6)
     rate.sleep()
 
-
-
 # run the code if the node is called
 if __name__ == '__main__':
   try:
     move()
   except rospy.ROSInterruptException:
     pass
-
-
