@@ -2,8 +2,7 @@
 
 import rospy
 import numpy as np
-from std_msgs.msg import String
-from std_msgs.msg import Float64
+from std_msgs.msg import String, Float64
 
 # Publish data
 def move():
