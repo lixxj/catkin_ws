@@ -16,12 +16,12 @@ class image_converter:
     def __init__(self):
         # initialize the node named image_processing
         rospy.init_node('image_processing', anonymous=True)
-        # initialize a publisher to send images from camera1 to a topic named image_topic1
-        self.image_pub1 = rospy.Publisher("image_topic1", Image, queue_size=10)
-        # initialize a publisher to send joint position detected by camera 1
-        self.pos_pub1 = rospy.Publisher('joint_pos1', Float64MultiArray, queue_size=5)
+        # initialize a publisher to send images from camera2 to a topic named image_topic2
+        self.image_pub2 = rospy.Publisher("image_topic2", Image, queue_size=10)
+        # initialize a publisher to send joint position detected by camera 2
+        self.pos_pub2 = rospy.Publisher('joint_pos2', Float64MultiArray, queue_size=5)
         # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
-        self.image_sub1 = rospy.Subscriber("/camera1/robot/image_raw", Image, self.callback1)
+        self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw", Image, self.callback2)
         # initialize the bridge between openCV and ROS
         self.bridge = CvBridge()
 
@@ -95,8 +95,8 @@ class image_converter:
     # Calculate the conversion from pixel to meter
     def pixel2meter(self, image):
         # Obtain the centre of each coloured blob
-        circle1Pos = np.array(self.detect_yellow(image))
-        circle2Pos = np.array(self.detect_blue(image))
+        circle1Pos = np.array(self.detect_blue(image))
+        circle2Pos = np.array(self.detect_yellow(image))
         # find the distance between two circles
         dist = np.sum((circle1Pos - circle2Pos)**2)
         return 2 / np.sqrt(dist)
@@ -110,25 +110,24 @@ class image_converter:
         circle1Pos = [j-i for i, j in zip(self.detect_blue(image), center)]
         circle2Pos = [j-i for i, j in zip(self.detect_green(image), center)]
         circle3Pos = [j-i for i, j in zip(self.detect_red(image), center)]
-        target = [j - i for i, j in zip(self.detect_target(image), center)]
-        print(a * np.array(circle1Pos + circle2Pos + circle3Pos + target))
+        target = [j-i for i, j in zip(self.detect_target(image), center)]
 
         return a * np.array(circle1Pos + circle2Pos + circle3Pos + target)
 
-    # Recieve data from camera 1, process it, and publish
-    def callback1(self, data):
+    # Recieve data, process it, and publish
+    def callback2(self, data):
         # Recieve the image
         try:
-            self.cv_image1 = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            self.cv_image2 = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
             print(e)
         # Uncomment if you want to save the image
-        # cv2.imwrite('image1_copy.png', self.cv_image1)
-        im1=cv2.imshow('window1', self.cv_image1)
+        # cv2.imwrite('image2_copy.png', self.cv_image2)
+        im2=cv2.imshow('window2', self.cv_image2)
         cv2.waitKey(1)
 
         # Detect the relative joint position in terms of the yellow joint
-        joints_pos_data = self.detect_joint_pos(self.cv_image1)
+        joints_pos_data = self.detect_joint_pos(self.cv_image2)
         # Filter out extreme values which is likely to be wrong
         if(any([np.absolute(x) > 10 for x in joints_pos_data])):
             return
@@ -138,8 +137,8 @@ class image_converter:
 
         # Publish the results
         try:
-            self.image_pub1.publish(self.bridge.cv2_to_imgmsg(self.cv_image1, "bgr8"))
-            self.pos_pub1.publish(self.joints_pos)
+            self.image_pub2.publish(self.bridge.cv2_to_imgmsg(self.cv_image2, "bgr8"))
+            self.pos_pub2.publish(self.joints_pos)
         except CvBridgeError as e:
             print(e)
 
