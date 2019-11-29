@@ -12,6 +12,15 @@ from cv_bridge import CvBridge, CvBridgeError
 
 
 class image_converter:
+  
+  # Returns an array of the x-coordinates for all blobs.
+  def detect_blob_centre_xs(self, image):
+    yX = self.detect_yellow_x(image)
+    bX   = self.detect_blue_x(image)
+    gX  = self.detect_green_x(image)
+    rX    = self.detect_red_x(image)
+
+    return np.array([yX, bX, gX, rX])
 
   # Detects the x component of a yellow blob's centre
   def detect_yellow_x(self, image):
@@ -52,15 +61,6 @@ class image_converter:
     M = cv2.moments(red_blob)
     cX = int(M['m10'] / M['m00'])
     return cX
-
-  # Returns an array of the x-coordinates for all blobs.
-  def detect_blob_centre_xs(self, image):
-    yX = self.detect_yellow_x(image)
-    bX   = self.detect_blue_x(image)
-    gX  = self.detect_green_x(image)
-    rX    = self.detect_red_x(image)
-
-    return np.array([yX, bX, gX, rX])
 
   # Defines publisher and subscriber
   def __init__(self):
