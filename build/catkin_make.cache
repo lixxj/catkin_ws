@@ -1,2 +1,0 @@
-ivr_assignment
--DCATKIN_DEVEL_PREFIX=/home/dice/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/dice/catkin_ws/install -G Unix Makefiles
