@@ -21,20 +21,20 @@ class image_converter:
     rX    = self.detect_red_x(image)
 
     return np.array([yX, bX, gX, rX])
-
-  # Detects the x component of a yellow blob's centre
-  def detect_yellow_x(self, image):
-    # thresholding the raw image on the colour yellow
-    yellow_blob = cv2.inRange(image, (0, 100, 100), (0, 255, 255))
-    # the kernel used for dilation
+  
+  def detect_red_x(self, image):
+    red_blob = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
     kernel = np.ones((5, 5), np.uint8)
-    # dilating the blob to better find the centre
-    # 8 iterations are done to minimise the impact of occlusion by parts of
-    # the robot arm
+    red_blob = cv2.dilate(red_blob, kernel, iterations=8)
+    M = cv2.moments(red_blob)
+    cX = int(M['m10'] / M['m00'])
+    return cX
+
+  def detect_yellow_x(self, image):
+    yellow_blob = cv2.inRange(image, (0, 100, 100), (0, 255, 255))
+    kernel = np.ones((5, 5), np.uint8)
     yellow_blob = cv2.dilate(yellow_blob, kernel, iterations=8)
-    # obtain the image moments of the blob
     M = cv2.moments(yellow_blob)
-    # calculate the x-coordinate (measured in pixels) of the blob's centre
     cX = int(M['m10'] / M['m00'])
     return cX
 
@@ -51,14 +51,6 @@ class image_converter:
     kernel = np.ones((5, 5), np.uint8)
     green_blob = cv2.dilate(green_blob, kernel, iterations=8)
     M = cv2.moments(green_blob)
-    cX = int(M['m10'] / M['m00'])
-    return cX
-
-  def detect_red_x(self, image):
-    red_blob = cv2.inRange(image, (0, 0, 100), (0, 0, 255))
-    kernel = np.ones((5, 5), np.uint8)
-    red_blob = cv2.dilate(red_blob, kernel, iterations=8)
-    M = cv2.moments(red_blob)
     cX = int(M['m10'] / M['m00'])
     return cX
 
